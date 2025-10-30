@@ -1,0 +1,9 @@
+syntax = "proto3";
+package driver.v1;
+
+message PrepareAssignRequest { string trip_id = 1; }
+message PrepareAssignReply   { bool ok = 1; }
+
+service DriverStream {
+  rpc PrepareAssign(PrepareAssignRequest) returns (PrepareAssignReply);
+}

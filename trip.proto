@@ -1,0 +1,19 @@
+syntax = "proto3";
+package trip.v1;
+import "google/api/annotations.proto";
+
+service TripService {
+  // REST: POST /v1/trips  (Envoy → gRPC)
+  rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse) {
+    option (google.api.http) = { post: "/v1/trips" body: "*" };
+  }
+}
+
+message CreateTripRequest {
+  double pickup_lat = 1;
+  double pickup_lng = 2;
+  double drop_lat   = 3;
+  double drop_lng   = 4;
+  string passenger_id = 5;
+}
+message CreateTripResponse { string trip_id = 1; }
