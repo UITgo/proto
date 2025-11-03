@@ -1,9 +1,34 @@
 syntax = "proto3";
-package driver.v1;
+package driver;
 
-message PrepareAssignRequest { string trip_id = 1; }
-message PrepareAssignReply   { bool ok = 1; }
+option go_package = "github.com/UITGo/driver-stream/internal/pb/DriverStream;DriverStream";
 
-service DriverStream {
-  rpc PrepareAssign(PrepareAssignRequest) returns (PrepareAssignReply);
+service DriverService {
+  rpc UpdateStatus       (UpdateStatusRequest)       returns (DriverAck);
+  rpc UpdateLocation     (UpdateLocationRequest)     returns (DriverAck);
+  rpc GetNearbyDrivers   (GetNearbyDriversRequest)   returns (GetNearbyDriversResponse);
+  rpc PrepareAssign      (PrepareAssignRequest)      returns (PrepareAssignResponse);
+  rpc ClaimTrip          (ClaimTripRequest)          returns (ClaimTripResponse);
 }
+
+message LatLng { double lat = 1; double lng = 2; }
+
+message UpdateStatusRequest { string driver_id = 1; string status = 2; } // ONLINE/OFFLINE
+message UpdateLocationRequest {
+  string driver_id = 1;
+  LatLng location  = 2;
+  double speed     = 3;
+  double heading   = 4;
+  int64  ts        = 5;
+}
+message DriverAck { bool success = 1; }
+
+message GetNearbyDriversRequest { LatLng location = 1; int32 radius = 2; int32 limit = 3; }
+message NearbyDriver { string driver_id = 1; double distance = 2; double lat = 3; double lng = 4; }
+message GetNearbyDriversResponse { repeated NearbyDriver drivers = 1; }
+
+message PrepareAssignRequest { string trip_id = 1; repeated string candidate_ids = 2; int32 ttl_seconds = 3; }
+message PrepareAssignResponse { bool queued = 1; string topic = 2; }
+
+message ClaimTripRequest { string trip_id = 1; string driver_id = 2; }
+message ClaimTripResponse { string status = 1; } // ACCEPTED/DECLINED

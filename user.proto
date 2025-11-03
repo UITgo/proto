@@ -1,0 +1,15 @@
+syntax = "proto3";
+package user;
+
+service UserService {
+  rpc GetProfile (GetProfileRequest) returns (GetProfileResponse);
+}
+
+message GetProfileRequest { string user_id = 1; }
+
+message GetProfileResponse {
+  bool   exists     = 1;
+  string user_id    = 2;
+  string name       = 3;
+  string avatar_url = 4;
+}
