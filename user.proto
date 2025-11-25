@@ -12,4 +12,5 @@ message GetProfileResponse {
   string user_id    = 2;
   string name       = 3;
   string avatar_url = 4;
+  string role       = 5;
 }
